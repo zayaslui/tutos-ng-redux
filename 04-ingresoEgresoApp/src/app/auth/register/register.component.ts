@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-register',
@@ -32,14 +33,34 @@ export class RegisterComponent {
 
   crearUsuario(){
     
-    if(this.registroForm.invalid){return;}    
+    if(this.registroForm.invalid){return;} 
     const {nombre, email, password} = this.registroForm.value;
+    //disparar el loading
+    Swal.fire({
+      title: 'Auto close alert!',
+      html: 'I will close in <b></b> milliseconds.',
+      didOpen: () => {
+        Swal.showLoading()
+      }
+    })    
+    //disparar el loading
+
     this.authService.crearUsuario(nombre, email, password)
       .then(credenciales => {
         console.log(credenciales);
+        //cerrar el loading
+        Swal.close();
+        //cerrar el loading
         this.router.navigate(['/'])
       })
-      .catch(err => console.error(err))
+      .catch(err => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: err.message,
+          footer: '<a href="">Why do I have this issue?</a>'
+        })
+      })
     
     /*
     console.log(this.registroForm);
