@@ -13,6 +13,12 @@ import { FooterComponent } from './shared/footer/footer.component';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
 
+//firebase
+import { provideFirebaseApp, getApp, initializeApp } from '@angular/fire/app';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { environment } from '../environments/environment';
+import { provideAuth,getAuth } from '@angular/fire/auth';
+
 //trabajar con formularios reactivos
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -27,12 +33,14 @@ import { ReactiveFormsModule } from '@angular/forms';
     DetalleComponent,
     FooterComponent,
     NavbarComponent,
-    SidebarComponent
+    SidebarComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    provideFirebaseApp(() => initializeApp( environment.firebase )),
+    provideAuth( () => getAuth() )
   ],
   providers: [],
   bootstrap: [AppComponent]
