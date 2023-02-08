@@ -12,7 +12,7 @@ export class AuthService {
   userLoggedIn$ = new Subject<boolean>();
   authenticated: boolean;
 
-  constructor(public auth: Auth) { 
+  constructor(public auth: Auth, private router : Router) { 
     this.authenticated = false;
   }
 
@@ -25,8 +25,10 @@ export class AuthService {
       this.authenticated = !!user;
       console.log('authenticated: ',this.authenticated);
       this.userLoggedIn$.next(this.authenticated)
-      //this.userLoggedIn$.subscribe(res => console.log("cambio"));
-    })
+      if(user?.email!=null){
+        this.router.navigate(['/'])
+      }
+    });
   }
 
   crearUsuario(nombre:string, email:string, password:string){

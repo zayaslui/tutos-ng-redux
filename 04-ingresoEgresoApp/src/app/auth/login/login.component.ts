@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { tap } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import Swal from 'sweetalert2';
 
@@ -24,7 +25,10 @@ export class LoginComponent {
     })
   }
 
-  ngOnInit():void{}
+  ngOnInit():void{
+    console.log("verificando login")
+    this.router.navigate(["/"]);
+  }
 
   login(){
     if(this.loginForm.invalid){return;}
@@ -41,14 +45,16 @@ export class LoginComponent {
 
     //disparar el loading
 
-    this.authService.loginUsuario(email, password)
+    //this.authService.loginUsuario(email, password)
+    this.authService.loginUsuario('lzayas@gmail.com', '123456')
     .then(credenciales => {
-      console.log(credenciales);
-      //cancelar el loading
+      console.log("credenciales: ", credenciales);
       Swal.close();
-      //cancelar el loading
-
-      this.router.navigate(['/'])
+      //TODO aca redirecciona al dashboard
+      console.log("intentando redireccionar")
+      this.router.navigate(['/']).catch(error => {
+        console.log("Navigate ERROR", error);
+      })
     })
     .catch(err => {
       Swal.fire({
@@ -58,11 +64,14 @@ export class LoginComponent {
         footer: '<a href="">Why do I have this issue?</a>'
       })
     })
+    //mude aca porque dentro del promise no funciona
+    this.router.navigate(['/']).catch(error => {
+      console.log("Navigate ERROR", error);
+    })
 
-
-    console.log(this.loginForm);
-    console.log(this.loginForm.valid);
-    console.log(this.loginForm.value);
+    //console.log(this.loginForm);
+    //console.log(this.loginForm.valid);
+    //console.log(this.loginForm.value);
   }
 
 
