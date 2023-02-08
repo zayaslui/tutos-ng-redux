@@ -19,6 +19,7 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
 import { provideAuth,getAuth } from '@angular/fire/auth';
 
+
 //trabajar con formularios reactivos
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -40,7 +41,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     AppRoutingModule,
     ReactiveFormsModule,
     provideFirebaseApp(() => initializeApp( environment.firebase )),
-    provideAuth( () => getAuth() )
+    provideAuth( () => getAuth() ),
+    
   ],
   providers: [],
   bootstrap: [AppComponent]
