@@ -73,7 +73,7 @@ export class LoginComponent implements OnInit, OnDestroy{
     this.authService.loginUsuario('lzayas@gmail.com', '123456')
     .then(credenciales => {
       console.log("credenciales: ", credenciales);
-      Swal.close();
+      //Swal.close();
       //TODO aca redirecciona al dashboard
       console.log("intentando redireccionar");
       this.router.navigate(['/']).catch(error => {
@@ -82,13 +82,13 @@ export class LoginComponent implements OnInit, OnDestroy{
     })
     .catch(err => {
       this.store.dispatch(ui.isLoading())
-    /*
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err.message,
-      footer: '<a href="">Why do I have this issue?</a>'
-    })
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.message,
+        footer: '<a href="">Why do I have this issue?</a>'
+      })
+      /*
     */
     })
     //mude aca porque dentro del promise no funciona
