@@ -1,7 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { tap } from 'rxjs';
+
+import { Subscription, tap } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/app.reducer';
+import * as ui from 'src/app/shared/ui.actions';
+
 import { AuthService } from 'src/app/services/auth.service';
 import Swal from 'sweetalert2';
 
@@ -10,31 +15,49 @@ import Swal from 'sweetalert2';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit, OnDestroy{
 
   loginForm : FormGroup;
+  cargando  : boolean;
+  uiSubscription: Subscription;
 
   constructor(
     private fb          : FormBuilder, 
     private authService : AuthService,
-    private router      : Router
+    private router      : Router,
+    private store       : Store<AppState>
   ){
     this.loginForm = this.fb.group({
       email         : ['', Validators.required],
       password      : ['', Validators.required]
     })
+    this.cargando = false;
+    this.uiSubscription = Subscription.EMPTY;
   }
 
   ngOnInit():void{
-    console.log("verificando login")
-    this.router.navigate(["/"]);
+    this.loginForm = this.fb.group({
+      email         : ['', Validators.required],
+      password      : ['', Validators.required]
+    });
+    this.uiSubscription = this.store.select('ui').subscribe( ui => {
+                            this.cargando = ui.isLoading;
+                            console.log("cargando subs.");
+                          });
+  }
+  ngOnDestroy(): void {
+    this.uiSubscription.unsubscribe();
   }
 
   login(){
     if(this.loginForm.invalid){return;}
+
+    this.store.dispatch(ui.isLoading())
+
     const {email, password} = this.loginForm.value
     
     //disparar el loading
+    /*
     Swal.fire({
       title: 'Auto close alert!',
       html: 'I will close in <b></b> milliseconds.',
@@ -42,6 +65,7 @@ export class LoginComponent {
         Swal.showLoading()
       }
     })
+    */
 
     //disparar el loading
 
@@ -57,12 +81,15 @@ export class LoginComponent {
       });
     })
     .catch(err => {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-        footer: '<a href="">Why do I have this issue?</a>'
-      })
+      this.store.dispatch(ui.isLoading())
+    /*
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: err.message,
+      footer: '<a href="">Why do I have this issue?</a>'
+    })
+    */
     })
     //mude aca porque dentro del promise no funciona
     this.router.navigate(['/']).catch(error => {
