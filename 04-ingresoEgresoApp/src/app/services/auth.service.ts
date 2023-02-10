@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Auth, authState ,createUserWithEmailAndPassword, signInWithEmailAndPassword } from '@angular/fire/auth';
+import { Auth ,createUserWithEmailAndPassword, signInWithEmailAndPassword } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import firebase from 'firebase/compat/app';
 import { from, map, observable, Observable, of, Subject, tap } from 'rxjs';

@@ -51,10 +51,10 @@ export class LoginComponent {
       console.log("credenciales: ", credenciales);
       Swal.close();
       //TODO aca redirecciona al dashboard
-      console.log("intentando redireccionar")
+      console.log("intentando redireccionar");
       this.router.navigate(['/']).catch(error => {
         console.log("Navigate ERROR", error);
-      })
+      });
     })
     .catch(err => {
       Swal.fire({
