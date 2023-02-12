@@ -54,7 +54,7 @@ export class AuthService {
         //this.db.collection(`${user.uid}`).doc("usuario").valueChanges()
         this.userSubscripcion = this.db.doc(`${user.uid}/usuario`).valueChanges()
         .subscribe((firestoreUser) => {
-          console.log("firestoreUser : ",{firestoreUser});
+          //console.log("firestoreUser : ",{firestoreUser});
           //const user = new Usuario('asdf','asdf','ejemplo@gmail.com')
           const user = Usuario.fromFirebase(firestoreUser)
           this.user_ = user;

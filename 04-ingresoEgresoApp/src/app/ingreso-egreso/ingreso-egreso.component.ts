@@ -20,6 +20,11 @@ export class IngresoEgresoComponent implements OnInit, OnDestroy{
   cargando    : boolean;
   uiSubscription: Subscription;
 
+  initialValueForm = {
+    descripcion   : ['', Validators.required],
+    monto         : ['', Validators.required],
+  }
+
   constructor( 
               private fb                    : FormBuilder, 
               private ingresoEgresoService  : IngresosEgresoService,
@@ -28,10 +33,12 @@ export class IngresoEgresoComponent implements OnInit, OnDestroy{
     this.tipo         = 'ingreso'
     this.cargando     = false;
     this.uiSubscription = Subscription.EMPTY;
-    this.ingresoForm  = this.fb.group({
-      descripcion   : ['', Validators.required],
-      monto         : ['', Validators.required],      
-    })
+    this.ingresoForm  = this.fb.group(this.initialValueForm)
+
+  }
+
+  resetCustom(){
+    this.ingresoForm  = this.fb.group(this.initialValueForm)
   }
   ngOnDestroy(): void {
     this.uiSubscription.unsubscribe();
@@ -46,15 +53,15 @@ export class IngresoEgresoComponent implements OnInit, OnDestroy{
     if(this.ingresoForm.invalid){return;}
     console.log(this.ingresoForm.value, this.tipo);
 
-
     const {descripcion, monto } = this.ingresoForm.value
     const ingresoEgreso = new IngresoEgreso(descripcion, monto, this.tipo);
     this.ingresoEgresoService
         .crearIngresoEgreso(ingresoEgreso)
         .then( (ref) => {
           //limpiar formulario
+          //this.ingresoForm.reset; no se porq  no funciona
+          this.resetCustom()
           this.store.dispatch(ui.stopLoading());
-          this.ingresoForm.reset;
           Swal.fire('Hey user!', 'Success!', 'success');
         })
         .catch( err => {

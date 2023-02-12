@@ -3,6 +3,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { IngresoEgreso } from '../models/ingreso-egreso.model';
 import { AuthService } from './auth.service';
 import { doc, setDoc } from "firebase/firestore";
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +39,25 @@ export class IngresosEgresoService {
     .catch( err => console.warn(err))
     */
 
+  }
+
+  initIngresosEgresosListener(uid :  string){
+    return this.firestore.collection(`${uid}/ingresos-egresos/items`)
+        .snapshotChanges()
+        .pipe(
+          map( snapshot => {
+            //console.log(snapshot)
+            return snapshot.map( doc => {
+              //console.log(doc.payload.doc.data())
+              const data: any = doc.payload.doc.data();
+              return { 
+                uid: doc.payload.doc.id,
+                ...doc.payload.doc.data() as any
+              }
+            });
+          })
+        )
+        //.subscribe( algo => {console.log(algo)})
   }
 
 }
