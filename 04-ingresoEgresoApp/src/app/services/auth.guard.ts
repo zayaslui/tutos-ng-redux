@@ -17,7 +17,7 @@ export class AuthGuard implements CanActivate {
     return this.authService.isAuth()
     .pipe(
       tap( estado => {
-        console.log("verificando canActivate...");
+        //console.log("verificando canActivate...");
         if ( !estado ) { 
           console.log("no hay credenciales redireccionando al login");
           this.router.navigate(['/login']);

@@ -21,6 +21,11 @@ export class AuthService {
   userLoggedIn$ = new Subject<boolean>();
   authenticated: boolean;
   userSubscripcion : Subscription;
+  private user_ : Usuario | null;
+
+  get user(){
+    return {... this.user_}
+  }
 
   constructor(
               public auth: Auth, 
@@ -29,6 +34,7 @@ export class AuthService {
             ) { 
     this.authenticated      = false;
     this.userSubscripcion   = Subscription.EMPTY;
+    this.user_              = new Usuario('','','');
   }
 
   //avisa cuando sucede un cambio con la autenticacion ver si tiene permiso a una ruta
@@ -36,22 +42,22 @@ export class AuthService {
     
     //no hace falta destruir este observable solo se instancia una vez
     this.auth.onAuthStateChanged( user => {
-      console.log("user.email : ",user?.email);
-      console.log("user.uid   : ",user?.uid);
+      //console.log("user.email : ",user?.email);
+      //console.log("user.uid   : ",user?.uid);
       if(user){
         this.authenticated = !!user;
         //console.log('authenticated: ',this.authenticated);
         //const temp = new Usuario('asdf','asdf','asdfasdfasdf@gmail.com')
         //this.store.dispatch(authActions.setUser({user: temp}))
         //this.db.collection('usuario').valueChanges().subscribe( (res) => {console.log(res)});
-
-        this.userLoggedIn$.next(this.authenticated);        
+        this.userLoggedIn$.next(this.authenticated);
         //this.db.collection(`${user.uid}`).doc("usuario").valueChanges()
         this.userSubscripcion = this.db.doc(`${user.uid}/usuario`).valueChanges()
         .subscribe((firestoreUser) => {
           console.log("firestoreUser : ",{firestoreUser});
           //const user = new Usuario('asdf','asdf','ejemplo@gmail.com')
           const user = Usuario.fromFirebase(firestoreUser)
+          this.user_ = user;
           this.store.dispatch(authActions.setUser({user}))
         })
         /*
@@ -59,7 +65,8 @@ export class AuthService {
         }else{
           this.userSubscripcion.unsubscribe();
           this.store.dispatch(authActions.unSetUser())
-          console.log('Llamar el unset del user');
+          //console.log('Llamar el unset del user');
+          this.user_ = null;
       }
       
 
@@ -82,12 +89,12 @@ export class AuthService {
   isAuth():Observable<boolean>{
     return this.userLoggedIn$
       .pipe(
-        tap(user => console.log("tap:", user)),
+        //tap(user => console.log("tap:", user)),
         map(user => {
-          console.log("map : ",user);
+          //console.log("map : ",user);
           return user != false;
         }),
-        tap(user => console.log("tap:", user)),
+        //tap(user => console.log("tap:", user)),
       )
   }
 
