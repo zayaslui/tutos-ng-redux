@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit, OnDestroy{
     });
     this.uiSubscription = this.store.select('ui').subscribe( ui => {
                             this.cargando = ui.isLoading;
-                            console.log("cargando subs.");
+                            console.log("cargando: ",this.cargando);
                           });
   }
   ngOnDestroy(): void {
@@ -68,17 +68,11 @@ export class LoginComponent implements OnInit, OnDestroy{
     */
 
     //disparar el loading
-
     //this.authService.loginUsuario(email, password)
     this.authService.loginUsuario('lzayas@gmail.com', '123456')
     .then(credenciales => {
-      console.log("credenciales: ", credenciales);
-      //Swal.close();
-      //TODO aca redirecciona al dashboard
-      console.log("intentando redireccionar");
-      this.router.navigate(['/']).catch(error => {
-        console.log("Navigate ERROR", error);
-      });
+      //console.log("credenciales: ", credenciales);
+      this.store.dispatch( ui.stopLoading() );
     })
     .catch(err => {
       this.store.dispatch(ui.isLoading())
@@ -88,17 +82,10 @@ export class LoginComponent implements OnInit, OnDestroy{
         text: err.message,
         footer: '<a href="">Why do I have this issue?</a>'
       })
-      /*
-    */
     })
     //mude aca porque dentro del promise no funciona
-    this.router.navigate(['/']).catch(error => {
-      console.log("Navigate ERROR", error);
-    })
+    this.router.navigate(['/'])
 
-    //console.log(this.loginForm);
-    //console.log(this.loginForm.valid);
-    //console.log(this.loginForm.value);
   }
 
 

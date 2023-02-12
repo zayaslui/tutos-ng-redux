@@ -1,8 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Auth ,createUserWithEmailAndPassword, signInWithEmailAndPassword } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+
+import { Store } from '@ngrx/store';
+import { from, map, observable, Observable, of, Subject, Subscription, tap } from 'rxjs';
+
 import firebase from 'firebase/compat/app';
-import { from, map, observable, Observable, of, Subject, tap } from 'rxjs';
+import { AppState } from '../app.reducer';
+import * as authActions from '../auth/auth.actions';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Usuario } from '../models/usuario.model';
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -11,23 +20,49 @@ export class AuthService {
 
   userLoggedIn$ = new Subject<boolean>();
   authenticated: boolean;
+  userSubscripcion : Subscription;
 
-  constructor(public auth: Auth, private router : Router) { 
-    this.authenticated = false;
+  constructor(
+              public auth: Auth, 
+              private store : Store<AppState>,
+              private db : AngularFirestore
+            ) { 
+    this.authenticated      = false;
+    this.userSubscripcion   = Subscription.EMPTY;
   }
 
   //avisa cuando sucede un cambio con la autenticacion ver si tiene permiso a una ruta
   initAuthListener(){
     
+    //no hace falta destruir este observable solo se instancia una vez
     this.auth.onAuthStateChanged( user => {
       console.log("user.email : ",user?.email);
       console.log("user.uid   : ",user?.uid);
-      this.authenticated = !!user;
-      console.log('authenticated: ',this.authenticated);
-      this.userLoggedIn$.next(this.authenticated)
-      if(user?.email!=null){
-        this.router.navigate(['/'])
+      if(user){
+        this.authenticated = !!user;
+        //console.log('authenticated: ',this.authenticated);
+        //const temp = new Usuario('asdf','asdf','asdfasdfasdf@gmail.com')
+        //this.store.dispatch(authActions.setUser({user: temp}))
+        //this.db.collection('usuario').valueChanges().subscribe( (res) => {console.log(res)});
+
+        this.userLoggedIn$.next(this.authenticated);        
+        //this.db.collection(`${user.uid}`).doc("usuario").valueChanges()
+        this.userSubscripcion = this.db.doc(`${user.uid}/usuario`).valueChanges()
+        .subscribe((firestoreUser) => {
+          console.log("firestoreUser : ",{firestoreUser});
+          //const user = new Usuario('asdf','asdf','ejemplo@gmail.com')
+          const user = Usuario.fromFirebase(firestoreUser)
+          this.store.dispatch(authActions.setUser({user}))
+        })
+        /*
+        */
+        }else{
+          this.userSubscripcion.unsubscribe();
+          this.store.dispatch(authActions.unSetUser())
+          console.log('Llamar el unset del user');
       }
+      
+
     });
   }
 

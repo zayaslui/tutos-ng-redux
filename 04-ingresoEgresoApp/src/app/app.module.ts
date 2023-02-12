@@ -26,6 +26,8 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 //trabajar con formularios reactivos
 import { ReactiveFormsModule } from '@angular/forms';
 import { appReducers } from './app.reducer';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 
 @NgModule({
   declarations: [
@@ -44,6 +46,7 @@ import { appReducers } from './app.reducer';
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
+    AngularFirestoreModule,
     provideFirebaseApp(() => initializeApp( environment.firebase )),
     provideAuth( () => getAuth() ),
     StoreModule.forRoot(appReducers),  //configuracion store
@@ -56,7 +59,9 @@ import { appReducers } from './app.reducer';
   }),
     
   ],
-  providers: [],
+  providers: [
+    { provide: FIREBASE_OPTIONS, useValue: environment.firebase } //para evitar error al inyectar AngularFirestore
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
