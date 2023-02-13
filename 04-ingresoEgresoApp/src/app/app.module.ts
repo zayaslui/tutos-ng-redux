@@ -28,6 +28,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { appReducers } from './app.reducer';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { FIREBASE_OPTIONS } from '@angular/fire/compat';
+import { OrdenIngresoPipe } from './pipes/orden-ingreso.pipe';
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -41,9 +43,11 @@ import { FIREBASE_OPTIONS } from '@angular/fire/compat';
     FooterComponent,
     NavbarComponent,
     SidebarComponent,
+    OrdenIngresoPipe,
   ],
   imports: [
     BrowserModule,
+    NgChartsModule,
     AppRoutingModule,
     ReactiveFormsModule,
     AngularFirestoreModule,

@@ -10,6 +10,7 @@ import { AppState } from '../app.reducer';
 import * as authActions from '../auth/auth.actions';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Usuario } from '../models/usuario.model';
+import * as ingresoEgresoActions from '../ingreso-egreso/ingreso-egreso.actions';
 
 
 
@@ -59,13 +60,14 @@ export class AuthService {
           const user = Usuario.fromFirebase(firestoreUser)
           this.user_ = user;
           this.store.dispatch(authActions.setUser({user}))
+          
         })
         /*
         */
         }else{
           this.userSubscripcion.unsubscribe();
-          this.store.dispatch(authActions.unSetUser())
-          //console.log('Llamar el unset del user');
+          this.store.dispatch(authActions.unSetUser());
+          this.store.dispatch(ingresoEgresoActions.unSetItems());
           this.user_ = null;
       }
       

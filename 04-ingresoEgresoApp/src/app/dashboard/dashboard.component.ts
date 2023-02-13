@@ -36,11 +36,11 @@ export class DashboardComponent implements OnInit, OnDestroy{
         filter( auth => auth.user!=null)
       )
       .subscribe( ({user}) => {
-        console.log({user});
+        //console.log({user});
         if(user)
           this.ingresoEgresoSubs = this.ingresoEgresoService.initIngresosEgresosListener(user.uid)
               .subscribe( ingresosEgresosFB => {
-                console.log("ingresosEgresosFB: ",ingresosEgresosFB);
+                //console.log("ingresosEgresosFB: ",ingresosEgresosFB);
                 this.store.dispatch(ingresosEgresosActions.setItems({items : ingresosEgresosFB}));
               });
       })

@@ -60,4 +60,9 @@ export class IngresosEgresoService {
         //.subscribe( algo => {console.log(algo)})
   }
 
+  borrarIngresoEgreso(uidItem : string){
+    const uid = this.authService.user.uid as string;
+    return this.firestore.doc(`${uid}/ingresos-egresos/items/${uidItem}`).delete();
+  }
+
 }
