@@ -4,6 +4,7 @@ import { AppState } from 'src/app/app.reducer';
 import { IngresoEgreso } from 'src/app/models/ingreso-egreso.model';
 import { ChartData, ChartEvent, ChartType } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
+import { AppStateWithIngreso } from '../ingreso-egreso.reducer';
 
 @Component({
   selector: 'app-estadistica',
@@ -31,7 +32,7 @@ export class EstadisticaComponent implements OnInit {
   };
 
   constructor(
-      private store: Store<AppState>
+      private store: Store<AppStateWithIngreso>
   ){
 
   }
@@ -45,7 +46,7 @@ export class EstadisticaComponent implements OnInit {
   generarEstadistica( items: IngresoEgreso[]){
     
     this.ingresos       = 0;
-    this.egresos        = 0;  
+    this.egresos        = 0;
     this.totalIngresos  = 0;
     this.totalEgresos   = 0;
 
@@ -65,6 +66,5 @@ export class EstadisticaComponent implements OnInit {
 
     // Actualizar el gráfico sin que sea necesario un socket (soluciona el problema de que no encuentra los labels)
     this.chart?.chart?.update();
-
   }
 }

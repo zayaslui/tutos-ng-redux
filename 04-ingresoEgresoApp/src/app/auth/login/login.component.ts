@@ -64,8 +64,8 @@ export class LoginComponent implements OnInit, OnDestroy{
     */
 
     //disparar el loading
-    //this.authService.loginUsuario(email, password)
-    this.authService.loginUsuario('lzayas@gmail.com', '123456')
+    this.authService.loginUsuario(email, password)
+    //this.authService.loginUsuario('lzayas@gmail.com', '123456')
     .then(credenciales => {
       //console.log("credenciales: ", credenciales);
       this.store.dispatch( ui.stopLoading() );
