@@ -23,9 +23,9 @@ export class UsuariosEffects {
                   mergeMap(
                     () => this.usuarioService.getUsers()
                             .pipe(
-                                map( users  => users['data']), //obtener solo los usuarios
+                                //map( users  => users['data']), //obtener solo los usuarios
                                 tap( data   => console.log( 'getUsers effects: ', data )),
-                                map( users  => usuariosActions.cargarUsuariosSuccess({ usuarios : users })),
+                                map( users  => usuariosActions.cargarUsuariosSuccess({ usuarios : users['data'] })),
                                 catchError((err) => of(usuariosActions.cargarUsuariosError({payload: err }))),
 
                             )
